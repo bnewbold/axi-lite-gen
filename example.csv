@@ -1,0 +1,17 @@
+word_index,bits,mode,section,slug,default,description
+0,32,p,meta,magic,0x0002_1EAF,Core-Specific Magic Number (0x0002_1EAF)
+1,32,p,meta,version,0,Core version number
+2,32,p,meta,feature_flags,0,Feature flags (or zero)
+3,32,p,meta,git_hash,0,"HDL Git commit hash stub, or 0 (32bits)"
+4,64,p,meta,build_time,0,UNIX time of build
+1024,1,rw,general,enable,,
+1025,1,rw,general,output_en,,
+1026,1,b,general,ring,,Doorbell
+1027,16,rw,general,ring_count,,Count of doorbell rings
+1028,16,r,general,ring_counta,,Count of doorbell rings
+1029,16,r,general,ring_countb,,Count of doorbell rings
+,,m,general,,,
+,32,p,general,PARAM,100,
+,20,rw,general,,,
+,,brw,general,secret,,Value with a doorbell
+4096,18,rwm,table,row[256],,

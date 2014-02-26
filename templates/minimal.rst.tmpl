@@ -1,0 +1,23 @@
+=========================================================================
+{{name}} Memory Map
+=========================================================================
+
+{% for sec_name, sec_values in sections.iteritems() %}
+{{sec_name}}
+---------------------------------------------------------
+
+.. list-table::
+   :widths: 10 5 5 15 55
+   :header-rows: 1
+
+   *   - Address
+       - Bits
+       - Mode
+       - Shortname
+       - What      {% for val in sec_values %}
+   *   - ``{{ val.addr_pp() }}``
+       - {{ val.bits }}
+       - ``{{ val.mode }}``
+       - {{ val.slug }}
+       - {{ val.description }}     {% endfor %}
+{% endfor %}

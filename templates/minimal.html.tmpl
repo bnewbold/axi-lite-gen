@@ -1,0 +1,41 @@
+<html>
+<head><title>{{ name }} Memory Map Documentation</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<style type="text/css">
+.error {padding: 15px; background-color: yellow; border: 4px solid orange; color:red;}
+table {border: 1px solid black; border-collapse: collapse; border-spacing:2px;}
+th, td {border-width: 1px; border-style: inset; border-color: gray; padding: 2px;}
+dt {font-weight: bold;}
+.code {color: white; background-color: black; border: 3px gray solid; 
+    width: 640px; padding: 3px; margin-left: 10px;}
+</style>
+</head>
+<body style="margin: 25px; font-family: helvetica;"> 
+<a name="top"><h1 style="border-bottom: 2px solid; margin-bottom: 2px;">
+{{ name }} Memory Map Documentation</h1></a>
+<i style="font-size:smaller;">
+{% for section in sections.keys() %}
+<a href="#{{section}}">{{section}}</a> - 
+{% endfor %}
+Last updated [{{ now }}] by {{ whoami }}
+</i><br>
+<p>
+
+{% for sec_name, sec_values in sections.iteritems() %}
+<a name="{{sec_name}}"><h2>{{ sec_name }}</h2></a>
+<table>
+  <tr><th>Memory Address
+      <th>Bits
+      <th>Mode
+      <th>Shortname
+      <th>What
+{% for val in sec_values %}
+  <tr><td>{{ val.addr_pp() }}
+      <td>{{ val.bits }}
+      <td>{{ val.mode }}
+      <td>{{ val.slug }}
+      <td>{{ val.description }}
+{% endfor %}
+</table>{% endfor %}
+
+</body></html>
