@@ -3,6 +3,7 @@
 =========================================================================
 
 {% for sec_name, sec_values in sections.iteritems() %}
+
 {{sec_name}}
 ---------------------------------------------------------
 
@@ -14,10 +15,14 @@
        - Bits
        - Mode
        - Shortname
-       - What      {% for val in sec_values %}
+       - What
+   {% for val in sec_values %}
    *   - ``{{ val.addr_pp() }}``
        - {{ val.bits }}
        - ``{{ val.mode }}``
        - {{ val.slug }}
-       - {{ val.description }}     {% endfor %}
+       - {{ val.description }}
+   {% endfor %}
+
 {% endfor %}
+

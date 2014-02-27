@@ -1,0 +1,45 @@
+{% if settings.stub_nets %}
+    {% for reg in registers %}
+    {% if reg.write %}
+    wire {{ reg.pphdlwidth() }}{{ reg.slug }};
+    {% else %}
+    reg {{ reg.pphdlwidth() }}{{ reg.slug }} = {{ reg.ppdefault() }};
+    {% endif %}
+    {% endfor %}
+    {%+ if parameters|length > 0 %}//// Static Memory Map Values{% endif %}
+    {% for param in parameters %}
+    parameter {{ param.ppslug() }} = {{ param.ppdefault() }};
+    {% endfor %}
+{% endif %}
+    axi_lite_slave_afg {% if parameters|length > 0 %}#(
+{%+ for param in parameters %}
+        .{{ param.ppslug() }}({{ param.ppslug() if settings.stub_axi_nets }}){% if not loop.last %},{% endif %}
+
+{% endfor %}
+    ){%endif%} axi_lite_slave_afg_i (
+        //// AXI I/O Signals
+        // NB: axi_clock comes at end
+        .axi_anreset({% if settings.stub_axi_nets %}axi_aresetn{% endif %}),
+        .axi_araddr({% if settings.stub_axi_nets %}axi_slave1_araddr[15:0]{% endif %}),
+        .axi_arready({% if settings.stub_axi_nets %}axi_slave1_arready{% endif %}),
+        .axi_arvalid({% if settings.stub_axi_nets %}axi_slave1_arvalid{% endif %}),
+        .axi_awaddr({% if settings.stub_axi_nets %}axi_slave1_awaddr[15:0]{% endif %}),
+        .axi_awready({% if settings.stub_axi_nets %}axi_slave1_awready{% endif %}),
+        .axi_awvalid({% if settings.stub_axi_nets %}axi_slave1_awvalid{% endif %}),
+        .axi_bready({% if settings.stub_axi_nets %}axi_slave1_bready{% endif %}),
+        .axi_bresp({% if settings.stub_axi_nets %}axi_slave1_bresp{% endif %}),
+        .axi_bvalid({% if settings.stub_axi_nets %}axi_slave1_bvalid{% endif %}),
+        .axi_rdata({% if settings.stub_axi_nets %}axi_slave1_rdata{% endif %}),
+        .axi_rready({% if settings.stub_axi_nets %}axi_slave1_rready{% endif %}),
+        .axi_rresp({% if settings.stub_axi_nets %}axi_slave1_rresp{% endif %}),
+        .axi_rvalid({% if settings.stub_axi_nets %}axi_slave1_rvalid{% endif %}),
+        .axi_wdata({% if settings.stub_axi_nets %}axi_slave1_wdata{% endif %}),
+        .axi_wready({% if settings.stub_axi_nets %}axi_slave1_wready{% endif %}),
+        .axi_wstrb({% if settings.stub_axi_nets %}axi_slave1_wstrb{% endif %}),
+        .axi_wvalid({% if settings.stub_axi_nets %}axi_slave1_wvalid{% endif %}),
+        //// Memory Map
+        {% for reg in registers %}
+        .{{ reg.slug }}({{ reg.slug if settings.stub_nets }}),
+        {% endfor %}
+        .axi_clock({% if settings.stub_axi_nets %}axi_aclk{% endif %}) // axi_clock is last to ensure no trailing comma
+        );

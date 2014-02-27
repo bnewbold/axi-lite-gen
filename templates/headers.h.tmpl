@@ -1,0 +1,20 @@
+#ifndef {{ name.upper() }}_MAP_H
+#define {{ name.upper() }}_MAP_H
+
+/* {{ name }} Memory Map Structs */
+
+/* WARNING: Currently assumes perfect packing */
+
+{% for sec_name, values in sections.iteritems() %}
+typedef struct {
+{% for val in values %}
+    {{ val.ctype() }} {{ val.slug }};
+{% endfor %}
+} {{ name }}_{{ sec_name }}_map;
+#define {{ name }}_{{ sec_name }}_offset    {{ values[0].addr_pp() }}
+/* Usage (?)
+ *      void *uint32_t {{ name }}_{{ sec_name }}_map...
+ */
+{% endfor %}
+
+#endif

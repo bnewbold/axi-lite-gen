@@ -1,0 +1,141 @@
+
+// Generate-time parameters:
+//    AXI_DATA_WIDTH = {{AXI_DATA_WIDTH}}
+//    AXI_ADDR_WIDTH = {{AXI_ADDR_WIDTH}}
+//    AXI_ADDR_MSB = {{AXI_ADDR_MSB}}
+//    AXI_ADDR_LSB = {{AXI_ADDR_LSB}}
+
+module axi_lite_slave_{{name}} (
+    //// AXI I/O Signals
+    input wire axi_anreset,
+    input wire [{{AXI_ADDR_WIDTH-1}}:0] axi_awaddr,
+    input wire axi_awvalid,
+    output wire s_axi_awready,
+    input wire [{{AXI_DATA_WIDTH-1}}:0] s_axi_wdata,
+    input wire [{{AXI_DATA_WIDTH/8-1}}:0] s_axi_wstrb,
+    input wire s_axi_wvalid,
+    output wire s_axi_wready,
+    output wire [1:0] s_axi_bresp,
+    output wire s_axi_bvalid,
+    input wire s_axi_bready,
+    input wire [{{AXI_ADDR_WIDTH-1}}:0] s_axi_araddr,
+    input wire s_axi_arvalid,
+    output wire s_axi_arready,
+    output wire [{{AXI_DATA_WIDTH-1}}:0] s_axi_rdata,
+    output wire [1:0] s_axi_rresp,
+    output wire s_axi_rvalid,
+    input wire s_axi_rready,
+{% if registers|length > 0 %}
+    //// {{ name }} register values
+{% for reg in registers %}
+    {%+ if reg.write %}output reg{% else %}input wire{% endif %} {{ reg.pphdlwidth() }}{{ reg.slug }},
+{% endfor %}
+{% endif %}
+    // axi_clock is last to ensure no trailing comma
+    input wire axi_clock
+);
+
+{% if parameters|length > 0 %}//// Static Memory Map Values{% endif %}
+
+{% for param in parameters %}
+parameter {{ param.ppslug() }} = {{ param.ppdefault() }};
+{% endfor %}
+
+//// Register Default Parameters
+{% for reg in registers %}
+parameter DEFAULT_{{ reg.slug.upper() }} = {{ reg.ppdefault() }};
+{% endfor %}
+
+//// Memory Mapped Register Initialization
+initial begin
+{% for reg in registers %}
+{% if reg.write %}
+    {{ reg.slug }} = DEFAULT_{{ reg.slug.upper() }};
+{% endif %}
+{% endfor %}
+end
+
+//// AXI Internals
+// TODO:
+wire slv_reg_wren;
+wire slv_reg_rden;
+reg [{{AXI_DATA_WIDTH-1}}:0] reg_data_out;
+reg [{{AXI_DATA_WIDTH-1}}:0] axi_wdata;
+reg [{{AXI_DATA_WIDTH-1}}:0] axi_rdata;
+reg [{{AXI_DATA_WIDTH-1}}:0] axi_araddr;
+
+{# this would be for duplicated sections
+genvar k;
+generate
+for (k = 1; k < 8; k = k + 1) begin: kblock
+    initial begin
+        afg_wavetable_select[k] <= 0;
+    end
+end
+endgenerate
+#}
+
+// This block handles writes
+always @(posedge axi_clock) begin
+    if (axi_anreset == 1'b0) begin
+{% for reg in registers %}
+{% if reg.write %}
+        {{ reg.slug }} <= DEFAULT_{{ reg.slug.upper() }};
+{% endif %}
+{% endfor %}
+    end else begin
+        if (slv_reg_wren) begin
+            casex (axi_awaddr[{{AXI_ADDR_MSB-1}}:{{AXI_ADDR_LSB}}])
+{% for reg in registers %}
+{% if reg.write %}
+{% for word in reg.word_list() %}
+            14'd{{ word[0] }}: begin
+                {{ reg.slug }}{{ word[2] }} <= axi_wdata{{ word[2] }};
+            end
+{% endfor %}
+{% endif %}
+{% endfor %}
+            default: begin
+                // pass
+            end
+          endcase
+        end else begin
+            // TODO: doorbells
+        end
+    end
+end
+
+// This block handles reads
+always @(posedge axi_clock) begin
+    if (axi_anreset == 1'b0) begin
+        reg_data_out <= 0;
+    end else if (slv_reg_rden) begin
+        // Read address mux
+        casex ( axi_araddr[{{AXI_ADDR_MSB-1}}:{{AXI_ADDR_LSB}}] )
+{% for reg in registers %}
+{% if reg.read %}
+{% for word in reg.word_list() %}
+        14'd{{ word[0] }}: begin
+            reg_data_out[31:0] <= {{ word[1] }};
+        end
+{% endfor %}
+{% endif %}
+{% endfor %}
+        default: begin
+            // pass
+        end
+        endcase
+    end
+end
+
+{# this would be for MEMORY blocks
+always @(posedge axi_clock) begin
+    if (slv_reg_wren) begin
+        memory_addr <= axi_awaddr[13:2];
+    end else begin
+        wavetables_addr <= axi_araddr[13:2];
+    end
+end
+#}
+
+endmodule

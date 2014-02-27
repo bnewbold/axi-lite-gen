@@ -24,17 +24,17 @@ Last updated [{{ now }}] by {{ whoami }}
 {% for sec_name, sec_values in sections.iteritems() %}
 <a name="{{sec_name}}"><h2>{{ sec_name }}</h2></a>
 <table>
-  <tr><th>Memory Address
-      <th>Bits
-      <th>Mode
-      <th>Shortname
-      <th>What
+  <tr><th>Memory Address</th>
+      <th>Bits</th>
+      <th>Mode</th>
+      <th>Shortname</th>
+      <th>What</th></tr>
 {% for val in sec_values %}
-  <tr><td>{{ val.addr_pp() }}
-      <td>{{ val.bits }}
-      <td>{{ val.mode }}
-      <td>{{ val.slug }}
-      <td>{{ val.description }}
+  <tr><td><pre>{{ val.addr_pp() }}</pre></td>
+      <td><pre>{{ val.bits }}</pre></td>
+      <td><pre>{{ val.mode }}</pre></td>
+      <td>{{ val.slug }}</td>
+      <td>{{ val.description }}</td></tr>
 {% endfor %}
 </table>{% endfor %}
 
