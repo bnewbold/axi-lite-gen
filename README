@@ -1,0 +1,15 @@
+                _ _ _ _                        
+      __ ___  _(_) (_) |_ ___  __ _  ___ _ __  
+     / _` \ \/ / | | | __/ _ \/ _` |/ _ \ '_ \ 
+    | (_| |>  <| | | | ||  __/ (_| |  __/ | | |
+     \__,_/_/\_\_|_|_|\__\___|\__, |\___|_| |_|
+                              |___/            
+
+Generates AXI-Lite HDL and documentation, plus getter/setter helpers for python
+and C.
+
+A work in progress.
+
+URL: http://github.com/leaflabs/axilitegen
+License for generator: MIT License
+License for templates and generated code: Public Domain
