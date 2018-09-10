@@ -20,13 +20,14 @@ The following environment variables, AXI_LITE_GEN must be set to this directory,
 the top level directory of axi-lite-gen, so that the parse.py script can find 
 the template files.
 
-
-Usage: parse.py [-h] inFile
+usage: parse.py [-h] [-n NAME] inFile
 
 Creates an axi-lite interface
 
 positional arguments:
-  inFile This is a csv file. (See example.py)
+  inFile                cvs file to parse
 
 optional arguments:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Used as basename for output files and in the output
+                        files for parts of module names, ect.
