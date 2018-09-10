@@ -13,3 +13,20 @@ A work in progress.
 URL: http://github.com/leaflabs/axilitegen
 License for generator: MIT License
 License for templates and generated code: Public Domain
+
+Environment variable setup:
+
+The following environment variables, AXI_LITE_GEN must be set to this directory,
+the top level directory of axi-lite-gen, so that the parse.py script can find 
+the template files.
+
+
+Usage: parse.py [-h] inFile
+
+Creates an axi-lite interface
+
+positional arguments:
+  inFile This is a csv file. (See example.py)
+
+optional arguments:
+  -h, --help  show this help message and exit

@@ -17,6 +17,9 @@ import os
 
 import jinja2
 
+import argparse
+import os
+
 AXI_DATA_WIDTH = 32
 AXI_ADDR_WIDTH = 16
 AXI_ADDR_MSB = AXI_ADDR_WIDTH-1
@@ -223,9 +226,9 @@ def error(s="unspecified"):
     sys.exit(-1)
 
 
-def parse():
+def parse(inFile):
     print("------- START READ")
-    f = open('example.csv', 'r')
+    f = open(inFile, 'r')
     reader = csv.DictReader(f)
 
     registers = []
@@ -320,7 +323,9 @@ def output(registers, parameters, sections):
     # TODO:
     # jinja2.ChoiceLoader
     # jinja2.PackageLoader
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'),
+
+    baseDir = os.environ["AXI_LITE_GEN"]
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(baseDir+'/templates'),
                             lstrip_blocks=True,
                             trim_blocks=True,
                             autoescape=guess_autoescape,
@@ -380,7 +385,10 @@ def output(registers, parameters, sections):
     print("------- DONE!")
 
 def main():
-    r, p, s = parse()
+    parser =  argparse.ArgumentParser(description = "Creates an axi-lite interface")
+    parser.add_argument("inFile")
+    args = parser.parse_args()
+    r, p, s = parse(args.inFile)
     output(r,p,s)
 
 if __name__=="__main__":
