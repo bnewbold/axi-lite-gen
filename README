@@ -8,7 +8,7 @@
 Generates AXI-Lite HDL and documentation, plus getter/setter helpers for python
 and C.
 
-A work in progress.
+A work in progress. Beware, the axi-lite logic is not currently in a working state.
 
 URL: http://github.com/leaflabs/axilitegen
 License for generator: MIT License
