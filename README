@@ -8,8 +8,26 @@
 Generates AXI-Lite HDL and documentation, plus getter/setter helpers for python
 and C.
 
-A work in progress.
+A work in progress. Beware, the axi-lite logic is not currently in a working state.
 
 URL: http://github.com/leaflabs/axilitegen
 License for generator: MIT License
 License for templates and generated code: Public Domain
+
+Environment variable setup:
+
+The following environment variables, AXI_LITE_GEN must be set to this directory,
+the top level directory of axi-lite-gen, so that the parse.py script can find 
+the template files.
+
+usage: parse.py [-h] [-n NAME] inFile
+
+Creates an axi-lite interface
+
+positional arguments:
+  inFile                cvs file to parse
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Used as basename for output files and in the output
+                        files for parts of module names, ect.
